@@ -5,7 +5,9 @@ import java.util.*;
 public class Player implements Dealer {
     private String playerName;
     private List<Card> hand;
-    private int score;
+    private int totalScore;
+    private int roundScore;
+    private int roundBet;
 
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -63,15 +65,21 @@ public class Player implements Dealer {
     }
 
     // TODO resolve the logic for playing the turn - calculating scores etc.
-    public void playCard(List<Card> playedCards, String currentTrump, boolean isTrumpPlayed) {
+    public boolean playCard(Map<Player, Card> playedCards, String currentTrump, boolean isTrumpPlayed) {
         String cardName = "";
-        do {
-            System.out.print("Hangi kartı oynayacaksınız?: ");
+        System.out.print("Hangi kartı oynayacaksınız?: ");
+        cardName = scanner.nextLine();
+        while (!Helper.checkPlayedCard(cardName, playedCards, currentTrump, hand, isTrumpPlayed)) {
+            System.out.print("Hatalı kart seçimi. Hangi kartı oynayacaksınız?: ");
             cardName = scanner.nextLine();
-        } while (!Helper.checkPlayedCard(cardName, hand, isTrumpPlayed));
+        }
 
         Card cardToPlay = Helper.findCardByName(hand, cardName);
-        playedCards.add(cardToPlay);
+        // System.out.println(cardToPlay.getName() + " " + cardToPlay.getValue());
+        playedCards.put(this, cardToPlay);
+
+        if (cardToPlay.getType().compareTo(currentTrump) == 0)  return true;
+        return false;
     }
 
     public void setPlayerName(String playerName) {
@@ -82,15 +90,39 @@ public class Player implements Dealer {
         this.hand = hand;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
     public String getPlayerName() { return playerName; }
 
     public List<Card> getHand() { return hand; }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
+
+    public void resetTotalScore() {
+        this.totalScore = 0;
+    }
+
+    public void changeTotalScore(int num) {
+        this.totalScore += num;
+    }
+
+    public int getRoundScore() {
+        return roundScore;
+    }
+
+    public void incrementRoundScore() {
+        this.roundScore++;
+    }
+
+    public void resetRoundScore() {
+        this.roundScore = 0;
+    }
+
+    public int getRoundBet() {
+        return roundBet;
+    }
+
+    public void setRoundBet(int roundBet) {
+        this.roundBet = roundBet;
+    }
  }

@@ -6,8 +6,8 @@ import java.util.List;
 public class Deck {
     private final List<Card> cards = new ArrayList<>();
 
-    private static final String[] types = {"Sinek", "Maça", "Kupa", "Karo"};
-    private static final String[] names = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Bacak", "Kız", "Papaz", "As"};
+    private static final String[] types = {"sinek", "maça", "kupa", "karo"};
+    private static final String[] names = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "bacak", "kız", "papaz", "as"};
 
     public Deck() {
         initializeDeck();
@@ -16,7 +16,7 @@ public class Deck {
     private void initializeDeck() {
         for (String type: types) {
             for (int i = 0; i < names.length; i++) {
-                cards.add(new Card(type + " " + names[i], i + 2));
+                cards.add(new Card(type + " " + names[i], type, i + 2));
             }
         }
     }
@@ -24,8 +24,16 @@ public class Deck {
     // TODO remove this method
     public void printDeck() {
         for (Card c: cards) {
-            System.out.println(c.getName() + " " + c.getValue());
+            System.out.println(c.getName() + " " + c.getType() + " " + c.getValue());
         }
+    }
+
+    public static String[] getTypes() {
+        return types;
+    }
+
+    public static String[] getNames() {
+        return names;
     }
 
     public List<Card> getCards() {

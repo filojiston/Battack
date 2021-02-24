@@ -1,13 +1,13 @@
 package com.seid.Battack;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Player implements Dealer {
     private String playerName;
-
     private List<Card> hand;
+    private int score;
+
+    private static final Scanner scanner = new Scanner(System.in);
 
     public Player(String playerName) {
         this.playerName = playerName;
@@ -24,21 +24,7 @@ public class Player implements Dealer {
         int index = players.indexOf(this);
 
         // calculate dealing order
-        int[] dealOrder;
-        switch (index) {
-            case 0:
-                dealOrder = new int[] {1, 2, 3, 0};
-                break;
-            case 1:
-                dealOrder = new int[] {2, 3, 0, 1};
-                break;
-            case 2:
-                dealOrder = new int[] {3, 0, 1, 2};
-                break;
-            case 3:
-                dealOrder = new int[] {0, 1, 2, 3};
-                break;
-        }
+        int[] dealOrder = Helper.orderCalculator(index);
 
         int cardIndex = 0;
 
@@ -46,7 +32,7 @@ public class Player implements Dealer {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 for (int k = 0; k < 3; k++) {
-                    players.get(i).getHand().add(cards.getCards().get(cardIndex));
+                    players.get(dealOrder[i]).getHand().add(cards.getCards().get(cardIndex));
                     cardIndex++;
                 }
             }
@@ -58,6 +44,51 @@ public class Player implements Dealer {
         }
     }
 
+    public String decideTrump(Deck deck) {
+        String trump = "";
+        do {
+            System.out.print("Kozu seçiniz: ");
+            trump = scanner.nextLine().toLowerCase();
+        } while (!Arrays.asList(Deck.getTypes()).contains(trump));
+        return trump;
+    }
+
+    public String getGuess(int biggerGuess) {
+        String guess;
+        do {
+            System.out.print("Kaçtan giriyorsunuz: ");
+            guess = scanner.nextLine();
+        } while (!Helper.checkGuess(guess, biggerGuess));
+        return guess;
+    }
+
+    // TODO resolve the logic for playing the turn - calculating scores etc.
+    public void playCard(List<Card> playedCards, String currentTrump, boolean isTrumpPlayed) {
+        String cardName = "";
+        do {
+            System.out.print("Hangi kartı oynayacaksınız?: ");
+            cardName = scanner.nextLine();
+        } while (!Helper.checkPlayedCard(cardName, hand, isTrumpPlayed));
+
+        Card cardToPlay = Helper.findCardByName(hand, cardName);
+        playedCards.add(cardToPlay);
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public void setHand(List<Card> hand) {
+        this.hand = hand;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public String getPlayerName() { return playerName; }
 

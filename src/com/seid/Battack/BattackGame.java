@@ -1,7 +1,5 @@
 package com.seid.Battack;
 
-import org.w3c.dom.ls.LSOutput;
-
 import java.util.*;
 
 public class BattackGame {
@@ -60,23 +58,24 @@ public class BattackGame {
             playTurn();
         }
 
-        for (Player p: players) {
+        for (Player p : players) {
             if (p.getRoundScore() < p.getRoundBet() || p.getRoundScore() == 0) {
                 p.changeTotalScore(-p.getRoundBet());
             } else {
                 p.changeTotalScore(p.getRoundBet());
             }
 
-            if (p.getTotalScore() >= LIMIT)  isRunning = false;
+            if (p.getTotalScore() >= LIMIT)
+                isRunning = false;
         }
     }
 
     public void playGame() {
-//        while (isRunning) {
-//            resetPlayerRoundScores(players);
-//            currentDealer = getNextPlayer(currentDealer, players);
-//            playRound();
-//        }
+        // while (isRunning) {
+        // resetPlayerRoundScores(players);
+        // currentDealer = getNextPlayer(currentDealer, players);
+        // playRound();
+        // }
 
         currentDealer.shuffleDeck(deck);
         currentDealer.dealCards(deck, players);
@@ -97,8 +96,10 @@ public class BattackGame {
         playTurn();
     }
 
-    /* TODO when implementing multiplayer, add something like timer
-     and make this deciding process like real game */
+    /*
+     * TODO when implementing multiplayer, add something like timer and make this
+     * deciding process like real game
+     */
     private Player decideStarter(List<Player> players) {
         Player maxGuesser = null;
         int index = players.indexOf(currentDealer);
@@ -123,7 +124,7 @@ public class BattackGame {
     }
 
     private void sortPlayersHand(List<Player> players) {
-        for (Player p: players) {
+        for (Player p : players) {
             p.getHand().sort((o1, o2) -> {
                 if (o1.getType().compareTo(o2.getType()) == 0) {
                     return o1.getValue() - o2.getValue();
@@ -150,7 +151,7 @@ public class BattackGame {
     }
 
     private void resetPlayerRoundScores(List<Player> players) {
-        for (Player p: players) {
+        for (Player p : players) {
             p.resetRoundScore();
         }
     }

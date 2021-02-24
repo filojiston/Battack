@@ -78,8 +78,7 @@ public class Player implements Dealer {
         // System.out.println(cardToPlay.getName() + " " + cardToPlay.getValue());
         playedCards.put(this, cardToPlay);
 
-        if (cardToPlay.getType().compareTo(currentTrump) == 0)  return true;
-        return false;
+        return cardToPlay.getType().compareTo(currentTrump) == 0;
     }
 
     public void setPlayerName(String playerName) {

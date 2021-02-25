@@ -1,8 +1,7 @@
 package com.seid.Battack;
 
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -71,6 +70,8 @@ public class Helper {
         } else {
             Card firstPlayed = getFirstPlayedCard(playedCards);
 
+            // Supplier<Stream<Card>> playerHandStreamSupplier = () -> playerHand.stream();
+
             var sameTypeCards = playerHand.stream()
                     .filter(card -> card.getType().compareTo(firstPlayed.getType()) == 0);
             if (sameTypeCards.count() == 0) {
@@ -87,29 +88,83 @@ public class Helper {
                     }
                     if (isTrumpPlayedOnTurn) {
                         // find max valued trump card
-                        // TODO finish this function
-                        var playedTrumps = playedCards.entrySet().stream()
-                                .filter(entry -> entry.getValue().getType().compareTo(currentTrump) == 0);
                         int maxValue = 0;
-
-                        // for every card
-                        boolean hasBigger = trumpCards.map(card -> card.getValue() > maxValue).count() > 0;
+                        for (Map.Entry<Player, Card> entry : playedCards.entrySet()) {
+                            // if the card is a trump card, find the max value
+                            Card currentCard = entry.getValue();
+                            if (currentCard.getType().compareTo(currentTrump) == 0) {
+                                if (currentCard.getValue() > maxValue)
+                                    maxValue = currentCard.getValue();
+                            }
+                        }
+                        // has player have bigger trump in hand?
+                        List<Card> biggerTrumpsOnHand = new ArrayList<>();
+                        List<Card> trumpCardsList = trumpCards.collect(Collectors.toList());
+                        for (Card c : trumpCardsList) {
+                            if (c.getValue() > maxValue)
+                                biggerTrumpsOnHand.add(c);
+                        }
+                        // if so, play one of them
+                        if (biggerTrumpsOnHand.size() > 0) {
+                            for (Card c : biggerTrumpsOnHand) {
+                                if (c.getName().compareTo(cardToPlay) == 0)
+                                    return true;
+                            }
+                            return false;
+                        } else { // else, play one of the trump cards
+                            for (Card c : trumpCardsList) {
+                                if (c.getName().compareTo(cardToPlay) == 0)
+                                    return true;
+                            }
+                            return false;
+                        }
                     } else { // else, player can play any trump card in hand
                         return theCard.getType().compareTo(currentTrump) == 0;
                     }
                 }
             } else { // player have same card type in hand
+                List<Card> sameTypeCardsList = sameTypeCards.collect(Collectors.toList());
+                boolean isTrumpPlayedOnTurn = false;
+                for (Map.Entry<Player, Card> entry : playedCards.entrySet()) {
+                    if (entry.getValue().getType().compareTo(currentTrump) == 0)
+                        isTrumpPlayedOnTurn = true;
+                }
 
+                if (isTrumpPlayedOnTurn) {
+                    for (Card c : sameTypeCardsList) {
+                        if (c.getName().compareTo(cardToPlay) == 0)
+                            return true;
+                    }
+                    return false;
+                } else {
+                    int maxValue = 0;
+                    for (Map.Entry<Player, Card> entry : playedCards.entrySet()) {
+                        if (entry.getValue().getValue() > maxValue)
+                            maxValue = entry.getValue().getValue();
+                    }
+
+                    List<Card> biggerCardsOnHand = new ArrayList<>();
+                    for (Card c : sameTypeCardsList) {
+                        if (c.getValue() > maxValue)
+                            biggerCardsOnHand.add(c);
+                    }
+
+                    if (biggerCardsOnHand.size() > 0) {
+                        for (Card c : biggerCardsOnHand) {
+                            if (c.getName().compareTo(cardToPlay) == 0)
+                                return true;
+                        }
+                        return false;
+                    } else {
+                        for (Card c : sameTypeCardsList) {
+                            if (c.getName().compareTo(cardToPlay) == 0)
+                                return true;
+                        }
+                        return false;
+                    }
+                }
             }
-
-            // you have the card with same type - this is the first played card
-            // you dont have a card with same type, but you have a trump card
-            // you dont have a card with same type and you dont have a trump card
-
         }
-
-        return true;
-
     }
 
     public static Card findCardByName(List<Card> playerHand, String cardName) {
@@ -141,9 +196,5 @@ public class Helper {
 
     public static Card getFirstPlayedCard(Map<Player, Card> playedCards) {
         return playedCards.entrySet().iterator().next().getValue();
-    }
-
-    public static Card getLastPlayedCard(Map<Player, Card> playedCards) {
-        return ((Map.Entry<Player, Card>) playedCards.entrySet().toArray()[playedCards.size() - 1]).getValue();
     }
 }

@@ -1,4 +1,3 @@
-package com.seid.Battack;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,3 @@
-package com.seid.Battack;
 
 public class Card {
     private int value;

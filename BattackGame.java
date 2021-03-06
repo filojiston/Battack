@@ -1,5 +1,3 @@
-package com.seid.Battack;
-
 import java.util.*;
 
 public class BattackGame {
@@ -22,6 +20,7 @@ public class BattackGame {
         deck = new Deck();
     }
 
+    // turn -> 1/13 of a round, where all players plays one card from their hands
     private void playTurn() {
         Map<Player, Card> playedCards = new LinkedHashMap<>();
         int[] playOrder = Helper.orderCalculatorPlay(players.indexOf(decider));
@@ -43,6 +42,8 @@ public class BattackGame {
         winnerOfTheTurn.incrementRoundScore();
     }
 
+    // round -> 1 round = 13 turns, after one round we calculate scores and update
+    // them respectfully.
     private void playRound() {
         currentDealer.shuffleDeck(deck);
         currentDealer.dealCards(deck, players);
@@ -70,6 +71,7 @@ public class BattackGame {
         }
     }
 
+    // main loop of the game.
     public void playGame() {
         // while (isRunning) {
         // resetPlayerRoundScores(players);

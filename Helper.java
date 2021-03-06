@@ -1,5 +1,3 @@
-package com.seid.Battack;
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -29,17 +27,17 @@ public class Helper {
     public static int[] orderCalculator(int index) {
         int[] dealOrder;
         switch (index) {
-            case 0:
-                dealOrder = new int[] { 1, 2, 3, 0 };
-                break;
-            case 1:
-                dealOrder = new int[] { 2, 3, 0, 1 };
-                break;
-            case 2:
-                dealOrder = new int[] { 3, 0, 1, 2 };
-                break;
-            default:
-                dealOrder = new int[] { 0, 1, 2, 3 };
+        case 0:
+            dealOrder = new int[] { 1, 2, 3, 0 };
+            break;
+        case 1:
+            dealOrder = new int[] { 2, 3, 0, 1 };
+            break;
+        case 2:
+            dealOrder = new int[] { 3, 0, 1, 2 };
+            break;
+        default:
+            dealOrder = new int[] { 0, 1, 2, 3 };
         }
         return dealOrder;
     }
@@ -69,15 +67,13 @@ public class Helper {
             return isTrumpPlayed || theCard.getType().compareTo(currentTrump) != 0;
         } else {
             Card firstPlayed = getFirstPlayedCard(playedCards);
-
-            // Supplier<Stream<Card>> playerHandStreamSupplier = () -> playerHand.stream();
-
-            var sameTypeCards = playerHand.stream()
-                    .filter(card -> card.getType().compareTo(firstPlayed.getType()) == 0);
-            if (sameTypeCards.count() == 0) {
+            var sameTypeCards = playerHand.stream().filter(card -> card.getType().compareTo(firstPlayed.getType()) == 0)
+                    .collect(Collectors.toList());
+            if (sameTypeCards.size() == 0) {
                 // player doesnt have same card type in hand, so has to play trump card
-                var trumpCards = playerHand.stream().filter(card -> card.getType().compareTo(currentTrump) == 0);
-                if (trumpCards.count() == 0) // if player does not have any trump card, play any card on hand
+                var trumpCards = playerHand.stream().filter(card -> card.getType().compareTo(currentTrump) == 0)
+                        .collect(Collectors.toList());
+                if (trumpCards.size() == 0) // if player does not have any trump card, play any card on hand
                     return true;
                 else {
                     // if any trump card played before, player has to play a card with bigger value
@@ -99,8 +95,7 @@ public class Helper {
                         }
                         // has player have bigger trump in hand?
                         List<Card> biggerTrumpsOnHand = new ArrayList<>();
-                        List<Card> trumpCardsList = trumpCards.collect(Collectors.toList());
-                        for (Card c : trumpCardsList) {
+                        for (Card c : trumpCards) {
                             if (c.getValue() > maxValue)
                                 biggerTrumpsOnHand.add(c);
                         }
@@ -112,7 +107,7 @@ public class Helper {
                             }
                             return false;
                         } else { // else, play one of the trump cards
-                            for (Card c : trumpCardsList) {
+                            for (Card c : trumpCards) {
                                 if (c.getName().compareTo(cardToPlay) == 0)
                                     return true;
                             }
@@ -123,7 +118,6 @@ public class Helper {
                     }
                 }
             } else { // player have same card type in hand
-                List<Card> sameTypeCardsList = sameTypeCards.collect(Collectors.toList());
                 boolean isTrumpPlayedOnTurn = false;
                 for (Map.Entry<Player, Card> entry : playedCards.entrySet()) {
                     if (entry.getValue().getType().compareTo(currentTrump) == 0)
@@ -131,7 +125,7 @@ public class Helper {
                 }
 
                 if (isTrumpPlayedOnTurn) {
-                    for (Card c : sameTypeCardsList) {
+                    for (Card c : sameTypeCards) {
                         if (c.getName().compareTo(cardToPlay) == 0)
                             return true;
                     }
@@ -144,7 +138,7 @@ public class Helper {
                     }
 
                     List<Card> biggerCardsOnHand = new ArrayList<>();
-                    for (Card c : sameTypeCardsList) {
+                    for (Card c : sameTypeCards) {
                         if (c.getValue() > maxValue)
                             biggerCardsOnHand.add(c);
                     }
@@ -156,7 +150,7 @@ public class Helper {
                         }
                         return false;
                     } else {
-                        for (Card c : sameTypeCardsList) {
+                        for (Card c : sameTypeCards) {
                             if (c.getName().compareTo(cardToPlay) == 0)
                                 return true;
                         }
@@ -179,17 +173,17 @@ public class Helper {
     public static int[] orderCalculatorPlay(int index) {
         int[] playOrder;
         switch (index) {
-            case 0:
-                playOrder = new int[] { 0, 1, 2, 3 };
-                break;
-            case 1:
-                playOrder = new int[] { 1, 2, 3, 0 };
-                break;
-            case 2:
-                playOrder = new int[] { 2, 3, 0, 1 };
-                break;
-            default:
-                playOrder = new int[] { 3, 0, 1, 2 };
+        case 0:
+            playOrder = new int[] { 0, 1, 2, 3 };
+            break;
+        case 1:
+            playOrder = new int[] { 1, 2, 3, 0 };
+            break;
+        case 2:
+            playOrder = new int[] { 2, 3, 0, 1 };
+            break;
+        default:
+            playOrder = new int[] { 3, 0, 1, 2 };
         }
         return playOrder;
     }
